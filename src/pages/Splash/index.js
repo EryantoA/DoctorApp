@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ILLogo} from '../../assets';
 
-export default function index() {
+export default function Splash() {
   return (
     <View style={styles.page}>
       <ILLogo />
