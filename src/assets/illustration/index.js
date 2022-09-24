@@ -1,4 +1,3 @@
 import ILLogo from './logo.svg';
 
-export { ILLogo };
-
+export {ILLogo};
