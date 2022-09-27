@@ -19,7 +19,7 @@ export default function Register({navigation}) {
         <Button
           title="Continue"
           onPress={() => navigation.navigate('UploadPhoto')}
-        /> 
+        />
       </View>
     </View>
   );
