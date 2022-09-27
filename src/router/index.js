@@ -1,6 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
+import {BottomNavigator} from '../components';
 import {
   Doctor,
   GetStarted,
@@ -17,7 +18,7 @@ const Tab = createBottomTabNavigator();
 
 const MainApp = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator tabBar={props => <BottomNavigator {...props} />}>
       <Tab.Screen
         name="Doctor"
         component={Doctor}
