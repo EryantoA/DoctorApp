@@ -30,7 +30,11 @@ const styles = StyleSheet.create({
     marginRight: 12,
     paddingBottom: 16,
   },
-  container: {flexDirection: 'row', justifyContent: 'space-between'},
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 16,
+  },
   rate: {flexDirection: 'row'},
   profile: {flex: 1},
   name: {fontSize: 16, fontFamily: fonts.primary[600]},
