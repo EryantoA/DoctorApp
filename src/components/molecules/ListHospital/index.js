@@ -7,9 +7,11 @@ export default function ListHospital() {
   return (
     <View style={styles.container}>
       <Image source={DummyHospital1} style={styles.picture} />
-      <Text style={styles.title}>Rumah Sakit</Text>
-      <Text style={styles.title}>Citra Bunga Merdeka</Text>
-      <Text style={styles.address}>Jln. Surya Sejahtera 20</Text>
+      <View>
+        <Text style={styles.title}>Rumah Sakit</Text>
+        <Text style={styles.title}>Citra Bunga Merdeka</Text>
+        <Text style={styles.address}>Jln. Surya Sejahtera 20</Text>
+      </View>
     </View>
   );
 }

@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   content: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.white,
     borderRadius: 20,
     flex: 1,
     marginTop: -30,
