@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {BottomNavigator} from '../components';
 import {
+  Chatting,
   ChooseDoctor,
   Doctor,
   GetStarted,
@@ -75,6 +76,11 @@ const Router = () => {
       <Stack.Screen
         name="ChooseDoctor"
         component={ChooseDoctor}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Chatting"
+        component={Chatting}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

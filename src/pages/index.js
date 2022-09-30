@@ -1,3 +1,4 @@
+import Chatting from './Chatting';
 import ChooseDoctor from './ChooseDoctor';
 import Doctor from './Doctor';
 import GetStarted from './GetStarted';
@@ -18,4 +19,5 @@ export {
   Messages,
   Hospitals,
   ChooseDoctor,
+  Chatting,
 };
