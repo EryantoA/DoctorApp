@@ -10,6 +10,7 @@ import Splash from './Splash';
 import UpdateProfile from './UpdateProfile';
 import UploadPhoto from './UploadPhoto';
 import UserProfile from './UserProfile';
+import DoctorProfile from './DoctorProfile';
 
 export {
   Splash,
@@ -24,4 +25,5 @@ export {
   Chatting,
   UserProfile,
   UpdateProfile,
+  DoctorProfile,
 };
