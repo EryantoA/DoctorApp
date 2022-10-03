@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {DummyDoctor1} from '../../assets';
-import {Header, ListDoctor} from '../../components';
+import {Header, List} from '../../components';
 import {colors} from '../../utils';
 
 export default function ChooseDoctor({navigation}) {
@@ -12,32 +12,32 @@ export default function ChooseDoctor({navigation}) {
         title="Pilih Dokter Anak"
         onPress={() => navigation.goBack()}
       />
-      <ListDoctor
+      <List
         type="next"
         profile={DummyDoctor1}
         name="Alexander Janie"
         desc="Wanita"
         onPress={() => navigation.navigate('Chatting')}
       />
-      <ListDoctor
+      <List
         type="next"
         profile={DummyDoctor1}
         name="Alexander Janie"
         desc="Wanita"
       />
-      <ListDoctor
+      <List
         type="next"
         profile={DummyDoctor1}
         name="Alexander Janie"
         desc="Wanita"
       />
-      <ListDoctor
+      <List
         type="next"
         profile={DummyDoctor1}
         name="Alexander Janie"
         desc="Wanita"
       />
-      <ListDoctor
+      <List
         type="next"
         profile={DummyDoctor1}
         name="Alexander Janie"
