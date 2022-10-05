@@ -1,6 +1,6 @@
-import firebase from 'firebase';
+import {initializeApp} from 'firebase/app';
 
-firebase.initializeApp({
+const firebaseConfig = {
   apiKey: 'AIzaSyBpPEn27rmT0eChdHgEt0Hptztbgczs4A0',
   authDomain: 'my-doctor-01-9ea38.firebaseapp.com',
   projectId: 'my-doctor-01-9ea38',
@@ -8,8 +8,8 @@ firebase.initializeApp({
   messagingSenderId: '130252798212',
   appId: '1:130252798212:web:97eb1a589a114149283851',
   measurementId: 'G-6SEGXLQC0L',
-});
+};
 
-const Firebase = firebase;
+const Fire = initializeApp(firebaseConfig);
 
-export default Firebase;
+export default Fire;

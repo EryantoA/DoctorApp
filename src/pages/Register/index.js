@@ -1,3 +1,4 @@
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
 import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Gap, Header, Input} from '../../components';
@@ -13,6 +14,16 @@ export default function Register({navigation}) {
 
   const onContinue = () => {
     console.log(form);
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, form.email, form.password)
+      .then(userCredential => {
+        const user = userCredential.user;
+        console.log('Register success: ', user);
+      })
+      .catch(error => {
+        const errorMessage = error.message;
+        console.log('error register: ', errorMessage);
+      });
     //() => navigation.navigate('UploadPhoto')
   };
   return (
