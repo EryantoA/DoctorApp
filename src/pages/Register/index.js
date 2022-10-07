@@ -1,7 +1,8 @@
 import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Button, Gap, Header, Input, Loading} from '../../components';
+import Fire from '../../config';
 import {colors, useForm} from '../../utils';
 
 export default function Register({navigation}) {
@@ -12,16 +13,20 @@ export default function Register({navigation}) {
     password: '',
   });
 
+  const [loading, setLoading] = useState(false);
+
   const onContinue = () => {
     console.log(form);
-    const auth = getAuth();
+    setLoading(true);
+    const auth = getAuth(Fire);
     createUserWithEmailAndPassword(auth, form.email, form.password)
-      .then(userCredential => {
-        const user = userCredential.user;
-        console.log('Register success: ', user);
+      .then(success => {
+        setLoading(false);
+        console.log('Register success: ', success);
       })
       .catch(error => {
         const errorMessage = error.message;
+        setLoading(false);
         console.log('error register: ', errorMessage);
       });
     //() => navigation.navigate('UploadPhoto')
@@ -61,7 +66,7 @@ export default function Register({navigation}) {
           </ScrollView>
         </View>
       </View>
-      <Loading />
+      {loading && <Loading />}
     </>
   );
 }

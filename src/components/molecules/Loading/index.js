@@ -1,6 +1,6 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { colors, fonts } from '../../../utils';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {colors, fonts} from '../../../utils';
 
 export default function Loading() {
   return (
