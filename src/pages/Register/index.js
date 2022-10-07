@@ -22,6 +22,7 @@ export default function Register({navigation}) {
     createUserWithEmailAndPassword(auth, form.email, form.password)
       .then(success => {
         setLoading(false);
+        setForm('reset');
         console.log('Register success: ', success);
       })
       .catch(error => {
