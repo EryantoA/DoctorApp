@@ -8,6 +8,7 @@ import NewsItem from './NewsItem';
 import RatedDoctor from './RatedDoctor';
 import Profile from './Profile';
 import ProfileItem from './ProfileItem';
+import Loading from './Loading';
 
 export {
   Header,
@@ -20,4 +21,5 @@ export {
   ListHospital,
   Profile,
   ProfileItem,
+  Loading,
 };
