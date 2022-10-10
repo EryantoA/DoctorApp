@@ -3,8 +3,8 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
-import {colors, useForm} from '../../utils';
 import Fire from '../../config';
+import {colors, useForm} from '../../utils';
 
 export default function Register({navigation}) {
   const [form, setForm] = useForm({
@@ -24,6 +24,18 @@ export default function Register({navigation}) {
       .then(success => {
         setLoading(false);
         setForm('reset');
+
+        // https://firebase.com/users/139d9w9chd
+        const data = {
+          fullName: form.fullName,
+          profession: form.profession,
+          email: form.email,
+        };
+
+        Fire.database()
+          .ref('users/' + success.user.uid + '/')
+          .set(data);
+
         console.log('Register success: ', success);
       })
       .catch(error => {
