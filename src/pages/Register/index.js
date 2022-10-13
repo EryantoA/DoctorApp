@@ -1,10 +1,10 @@
 import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+import {getDatabase, ref, set} from 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
-// import Fire from '../../config';
-import {db, Fire} from '../../config';
+import Fire from '../../config';
 import {colors, useForm} from '../../utils';
 
 export default function Register({navigation}) {
@@ -20,43 +20,42 @@ export default function Register({navigation}) {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
-    const auth = getAuth(db);
-    createUserWithEmailAndPassword(auth, form.email, form.password)
-      .then(success => {
+    const auth = getAuth(Fire);
+    createUserWithEmailAndPassword(auth, form.email, form.password).then(
+      success => {
         setLoading(false);
         setForm('reset');
 
         // https://firebase.com/users/139d9w9chd
-
-        // set(ref(db, 'users/' + success.user.uid + '/'), {
-        //   fullName: form.fullName,
-        //   profession: form.profession,
-        //   email: form.email,
-        // });
-
-        const data = {
+        const database = getDatabase(Fire);
+        set(ref(database, 'users/' + success.user.uid + '/'), {
           fullName: form.fullName,
           profession: form.profession,
           email: form.email,
-        };
-
-        Fire.database()
-          .ref('users/' + success.user.uid + '/')
-          .set(data);
-
-        console.log('Register success: ', success);
-      })
-      .catch(error => {
-        const errorMessage = error.message;
-        setLoading(false);
-        showMessage({
-          message: errorMessage,
-          type: 'default',
-          backgroundColor: colors.error,
-          color: colors.white,
         });
-        console.log('error: ', errorMessage);
-      });
+        console.log('Register success: ', success).catch(error => {
+          const errorMessage = error.message;
+          setLoading(false);
+          showMessage({
+            message: errorMessage,
+            type: 'default',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+          console.log('error: ', errorMessage);
+        });
+
+        // const data = {
+        //   fullName: form.fullName,
+        //   profession: form.profession,
+        //   email: form.email,
+        // };
+
+        // Fire.database()
+        //   .ref('users/' + success.user.uid + '/')
+        //   .set(data);
+      },
+    );
     //() => navigation.navigate('UploadPhoto')
   };
   return (
