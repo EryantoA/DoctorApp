@@ -1,27 +1,37 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import * as ImagePicker from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
 import {colors, fonts} from '../../utils';
 
 export default function UploadPhoto({navigation}) {
   const [hasPhoto, setHasPhoto] = useState(false);
+  const [photo, setPhoto] = useState(ILNullPhoto);
+  const getImage = () => {
+    ImagePicker.launchImageLibrary({}, Response => {
+      console.log('response: ', Response);
+      const source = {uri: Response.uri};
+      setPhoto(source);
+      setHasPhoto(true);
+    });
+  };
   return (
     <View style={styles.page}>
       <Header title="Upload Photo" onPress={() => navigation.goBack()} />
       <View style={styles.content}>
         <View style={styles.profile}>
-          <View style={styles.avatarWrapper}>
-            <Image source={ILNullPhoto} style={styles.avatar} />
+          <TouchableOpacity style={styles.avatarWrapper} onPress={getImage}>
+            <Image source={photo} style={styles.avatar} />
             {hasPhoto && <IconRemovePhoto style={styles.addPhoto} />}
             {!hasPhoto && <IconAddPhoto style={styles.addPhoto} />}
-          </View>
+          </TouchableOpacity>
           <Text style={styles.name}>Eryanto Agusriadi</Text>
           <Text style={styles.profession}>Programmer</Text>
         </View>
         <View>
           <Button
-            disable
+            disable={!hasPhoto}
             title="Upload and Continue"
             onPress={() => navigation.replace('MainApp')}
           />
@@ -47,7 +57,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   profile: {alignItems: 'center', flex: 1, justifyContent: 'center'},
-  avatar: {width: 110, height: 110},
+  avatar: {width: 110, height: 110, borderRadius: 110 / 2},
   avatarWrapper: {
     width: 130,
     height: 130,
