@@ -44,16 +44,6 @@ export default function Register({navigation}) {
           });
           console.log('error: ', errorMessage);
         });
-
-        // const data = {
-        //   fullName: form.fullName,
-        //   profession: form.profession,
-        //   email: form.email,
-        // };
-
-        // Fire.database()
-        //   .ref('users/' + success.user.uid + '/')
-        //   .set(data);
       },
     );
     //() => navigation.navigate('UploadPhoto')
