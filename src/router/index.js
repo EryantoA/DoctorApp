@@ -6,16 +6,16 @@ import {
   Chatting,
   ChooseDoctor,
   Doctor,
+  DoctorProfile,
   GetStarted,
   Hospitals,
   Login,
   Messages,
   Register,
   Splash,
+  UpdateProfile,
   UploadPhoto,
   UserProfile,
-  UpdateProfile,
-  DoctorProfile,
 } from '../pages';
 
 const Stack = createNativeStackNavigator();
@@ -45,7 +45,7 @@ const MainApp = () => {
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="UploadPhoto">
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
         name="Splash"
         component={Splash}

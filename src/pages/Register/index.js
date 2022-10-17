@@ -1,11 +1,9 @@
-import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
-import {getDatabase, ref, set} from 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
 import Fire from '../../config';
-import {colors, useForm} from '../../utils';
+import {colors, useForm, storeData} from '../../utils';
 
 export default function Register({navigation}) {
   const [form, setForm] = useForm({
@@ -20,33 +18,36 @@ export default function Register({navigation}) {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
-    const auth = getAuth(Fire);
-    createUserWithEmailAndPassword(auth, form.email, form.password).then(
-      success => {
+    Fire.auth()
+      .createUserWithEmailAndPassword(form.email, form.password)
+      .then(success => {
         setLoading(false);
         setForm('reset');
-
-        // https://firebase.com/users/139d9w9chd
-        const database = getDatabase(Fire);
-        set(ref(database, 'users/' + success.user.uid + '/'), {
+        const data = {
           fullName: form.fullName,
           profession: form.profession,
           email: form.email,
+        };
+
+        Fire.database()
+          .ref('users/' + success.user.uid + '/')
+          .set(data);
+
+        storeData('user', form);
+        console.log('register success: ', success);
+      })
+      .catch(error => {
+        const errorMessage = error.message;
+        setLoading(false);
+        showMessage({
+          message: errorMessage,
+          type: 'default',
+          backgroundColor: colors.error,
+          color: colors.white,
         });
-        console.log('Register success: ', success).catch(error => {
-          const errorMessage = error.message;
-          setLoading(false);
-          showMessage({
-            message: errorMessage,
-            type: 'default',
-            backgroundColor: colors.error,
-            color: colors.white,
-          });
-          console.log('error: ', errorMessage);
-        });
-      },
-    );
-    //() => navigation.navigate('UploadPhoto')
+        console.log('error: ', error);
+      });
+    // navigation.navigate('UploadPhoto');
   };
   return (
     <>
