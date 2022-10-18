@@ -1,9 +1,10 @@
 import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
-import {getDatabase, ref} from 'firebase/database';
+import {getDatabase, ref, set} from 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
+import Fire from '../../config/Fire';
 import {colors, storeData, useForm} from '../../utils';
 
 export default function Register({navigation}) {
@@ -19,22 +20,19 @@ export default function Register({navigation}) {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
-    const auth = getAuth();
+    const auth = getAuth(Fire);
     createUserWithEmailAndPassword(auth, form.email, form.password)
-      .then(success => {
+      .then(userCredential => {
         setLoading(false);
         setForm('reset');
-        const data = {
+        const user = userCredential.user;
+        const db = getDatabase(Fire);
+        set(ref(db, 'users/', user.uid), {
           fullName: form.fullName,
           profession: form.profession,
           email: form.email,
-        };
-
-        const db = getDatabase();
-        ref(db, 'users/' + success.user.uid + '/').set(data);
-
-        storeData('user', data);
-        console.log('register success: ', success);
+        });
+        storeData('user', db);
       })
       .catch(error => {
         const errorMessage = error.message;
