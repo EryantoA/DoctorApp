@@ -33,6 +33,10 @@ export default function Register({navigation}) {
           email: form.email,
         });
         storeData('user', db);
+        navigation.navigate('UploadPhoto', {
+          fullName: form.fullName,
+          profession: form.profession,
+        });
       })
       .catch(error => {
         const errorMessage = error.message;
@@ -45,7 +49,6 @@ export default function Register({navigation}) {
         });
         console.log('error: ', error);
       });
-    // navigation.navigate('UploadPhoto');
   };
   return (
     <>
