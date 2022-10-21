@@ -6,7 +6,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
 import Fire from '../../config/Fire';
-import {colors, fonts} from '../../utils';
+import {colors, fonts, storeData} from '../../utils';
 
 export default function UploadPhoto({navigation, route}) {
   const {fullName, profession, uid} = route.params;
@@ -18,32 +18,29 @@ export default function UploadPhoto({navigation, route}) {
   const [photo, setPhoto] = useState(ILNullPhoto);
 
   const getImage = () => {
-    const options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchImageLibrary(options, response => {
-      console.log('response: ', response);
-      if (response.didCancel || response.error) {
-        showMessage({
-          message: 'Oops, sepertinya anda tidak memilih fotonya',
-          type: 'default',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
-      } else {
-        console.log('response getImage: ', JSON.stringify(response));
-        const source = response.assets[0].uri;
+    ImagePicker.launchImageLibrary(
+      {quality: 0.5, maxWidth: 200, maxHeight: 200},
+      response => {
+        console.log('response: ', response);
+        if (response.didCancel || response.error) {
+          showMessage({
+            message: 'Oops, sepertinya anda tidak memilih fotonya',
+            type: 'default',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+        } else {
+          console.log('response getImage: ', JSON.stringify(response));
+          const source = {uri: response.assets[0].uri};
 
-        setPhotoForDB(
-          `data:${response.assets[0].type};base64, ${response.assets[0].uri}`,
-        );
-        setPhoto(source);
-        setHasPhoto(true);
-      }
-    });
+          setPhotoForDB(
+            `data:${response.assets[0].type};base64, ${response.assets[0].uri}`,
+          );
+          setPhoto(source);
+          setHasPhoto(true);
+        }
+      },
+    );
   };
 
   const uploadAndContinue = () => {
@@ -52,6 +49,12 @@ export default function UploadPhoto({navigation, route}) {
     update(ref(db, 'users/' + uid + '/'), {
       photo: photoForDB,
     });
+
+    const data = route.params;
+    data.photo = photoForDB;
+
+    storeData('user', data);
+
     navigation.replace('MainApp');
   };
   return (
