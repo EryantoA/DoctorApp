@@ -1,22 +1,32 @@
+import {getDatabase, ref, update} from 'firebase/database';
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import * as ImagePicker from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
+import Fire from '../../config/Fire';
 import {colors, fonts} from '../../utils';
 
 export default function UploadPhoto({navigation, route}) {
-  const {fullName, profession} = route.params;
+  const {fullName, profession, uid} = route.params;
   console.log('fullname: ', fullName);
   console.log('profession: ', profession);
 
+  const [photoForDB, setPhotoForDB] = useState('');
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
+
   const getImage = () => {
-    ImagePicker.launchImageLibrary({}, Response => {
-      console.log('response: ', Response);
-      if (Response.didCancel || Response.error) {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchImageLibrary(options, response => {
+      console.log('response: ', response);
+      if (response.didCancel || response.error) {
         showMessage({
           message: 'Oops, sepertinya anda tidak memilih fotonya',
           type: 'default',
@@ -24,11 +34,25 @@ export default function UploadPhoto({navigation, route}) {
           color: colors.white,
         });
       } else {
-        const source = {uri: Response.uri};
+        console.log('response getImage: ', JSON.stringify(response));
+        const source = response.assets[0].uri;
+
+        setPhotoForDB(
+          `data:${response.assets[0].type};base64, ${response.assets[0].uri}`,
+        );
         setPhoto(source);
         setHasPhoto(true);
       }
     });
+  };
+
+  const uploadAndContinue = () => {
+    const db = getDatabase(Fire);
+
+    update(ref(db, 'users/' + uid + '/'), {
+      photo: photoForDB,
+    });
+    navigation.replace('MainApp');
   };
   return (
     <View style={styles.page}>
@@ -47,7 +71,7 @@ export default function UploadPhoto({navigation, route}) {
           <Button
             disable={!hasPhoto}
             title="Upload and Continue"
-            onPress={() => navigation.replace('MainApp')}
+            onPress={uploadAndContinue}
           />
           <Gap height={30} />
           <Link

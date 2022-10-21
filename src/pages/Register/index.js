@@ -25,17 +25,18 @@ export default function Register({navigation}) {
       .then(userCredential => {
         setLoading(false);
         setForm('reset');
-        const user = userCredential.user;
         const db = getDatabase(Fire);
-        set(ref(db, 'users/', user.uid), {
+        set(ref(db, 'users/' + userCredential.user.uid + '/'), {
           fullName: form.fullName,
           profession: form.profession,
           email: form.email,
+          uid: userCredential.user.uid,
         });
         storeData('user', db);
         navigation.navigate('UploadPhoto', {
           fullName: form.fullName,
           profession: form.profession,
+          uid: userCredential.user.uid,
         });
       })
       .catch(error => {
