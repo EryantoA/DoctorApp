@@ -1,12 +1,24 @@
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ILLogo} from '../../assets';
+import Fire from '../../config/Fire';
 import {colors, fonts} from '../../utils';
 
 export default function Splash({navigation}) {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('GetStarted');
+      const auth = getAuth(Fire);
+      onAuthStateChanged(auth, user => {
+        if (user) {
+          // user lagi login
+          console.log('user: ', user);
+          navigation.replace('MainApp');
+        } else {
+          // user logout
+          navigation.replace('GetStarted');
+        }
+      });
     }, 3000);
   }, [navigation]);
   return (
