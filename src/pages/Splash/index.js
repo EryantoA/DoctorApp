@@ -1,25 +1,22 @@
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ILLogo} from '../../assets';
-import Fire from '../../config/Fire';
+import {firebase} from '../../config/Fire';
 import {colors, fonts} from '../../utils';
 
 export default function Splash({navigation}) {
   useEffect(() => {
-    setTimeout(() => {
-      const auth = getAuth(Fire);
-      onAuthStateChanged(auth, user => {
+    const unsubcribe = firebase.auth().onAuthStateChanged(user => {
+      setTimeout(() => {
         if (user) {
-          // user lagi login
-          console.log('user: ', user);
           navigation.replace('MainApp');
         } else {
-          // user logout
           navigation.replace('GetStarted');
         }
-      });
-    }, 3000);
+      }, 3000);
+    });
+
+    return () => unsubcribe();
   }, [navigation]);
   return (
     <View style={styles.page}>

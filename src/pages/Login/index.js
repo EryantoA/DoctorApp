@@ -1,11 +1,9 @@
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-import {child, get, getDatabase, ref} from 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {ILLogo} from '../../assets';
 import {Button, Gap, Input, Link, Loading} from '../../components';
-import Fire from '../../config/Fire';
+import {firebase} from '../../config/Fire';
 import {colors, fonts, storeData, useForm} from '../../utils';
 
 export default function Login({navigation}) {
@@ -15,35 +13,35 @@ export default function Login({navigation}) {
   const login = () => {
     console.log('form: ', form);
     setLoading(true);
-    const auth = getAuth(Fire);
-    signInWithEmailAndPassword(auth, form.email, form.password).then(
-      userCredential => {
-        console.log('success: ', userCredential);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(form.email, form.password)
+      .then(res => {
+        console.log('success: ', res);
         setLoading(false);
-        const dbRef = ref(getDatabase(Fire));
-        get(child(dbRef, `users/${userCredential.user.uid}/`))
-          .then(snapshot => {
-            console.log('data user: ', snapshot.val());
-            if (snapshot.exists()) {
-              storeData('user', snapshot.val());
-              navigation.replace('MainApp');
-            } else {
-              console.log('No data available');
+        firebase
+          .database()
+          .ref(`users/${res.user.uid}/`)
+          .once('value')
+          .then(resDB => {
+            console.log('data user: ', resDB.val());
+            if (resDB.val()) {
+              storeData('user', resDB.val());
             }
-          })
-          .catch(error => {
-            console.log('error: ', error);
-            setLoading(false);
-            showMessage({
-              message: error.message,
-              type: 'default',
-              backgroundColor: colors.error,
-              color: colors.white,
-            });
           });
-      },
-    );
+      })
+      .catch(err => {
+        console.log('error: ', err);
+        setLoading(false);
+        showMessage({
+          message: err.message,
+          type: 'default',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      });
   };
+
   return (
     <>
       <View style={styles.page}>

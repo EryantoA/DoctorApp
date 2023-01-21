@@ -1,10 +1,8 @@
-import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
-import {getDatabase, ref, set} from 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
-import Fire from '../../config/Fire';
+import {firebase} from '../../config/Fire';
 import {colors, storeData, useForm} from '../../utils';
 
 export default function Register({navigation}) {
@@ -20,35 +18,35 @@ export default function Register({navigation}) {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
-    const auth = getAuth(Fire);
-    createUserWithEmailAndPassword(auth, form.email, form.password)
-      .then(userCredential => {
-        setLoading(false);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(form.email, form.password)
+      .then(success => {
         setForm('reset');
-        const db = getDatabase(Fire);
-        set(ref(db, 'users/' + userCredential.user.uid + '/'), {
-          fullName: form.fullName,
+        const data = {
+          fullname: form.fullName,
           profession: form.profession,
           email: form.email,
-          uid: userCredential.user.uid,
-        });
-        storeData('user', db);
-        navigation.navigate('UploadPhoto', {
-          fullName: form.fullName,
-          profession: form.profession,
-          uid: userCredential.user.uid,
-        });
+          uid: success.user.uid,
+        };
+
+        firebase
+          .database()
+          .ref('users/' + success.user.uid + '/')
+          .set(data);
+
+        storeData('user', data);
+        navigation.navigate('UploadPhoto', data);
       })
-      .catch(error => {
-        const errorMessage = error.message;
+      .catch(err => {
+        console.log('error: ', err);
         setLoading(false);
         showMessage({
-          message: errorMessage,
+          message: err.message,
           type: 'default',
           backgroundColor: colors.error,
           color: colors.white,
         });
-        console.log('error: ', error);
       });
   };
   return (

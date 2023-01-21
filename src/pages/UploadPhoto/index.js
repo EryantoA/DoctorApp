@@ -1,11 +1,10 @@
-import {getDatabase, ref, update} from 'firebase/database';
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import * as ImagePicker from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
-import Fire from '../../config/Fire';
+import {firebase} from '../../config/Fire';
 import {colors, fonts, storeData} from '../../utils';
 
 export default function UploadPhoto({navigation, route}) {
@@ -31,11 +30,9 @@ export default function UploadPhoto({navigation, route}) {
           });
         } else {
           console.log('response getImage: ', JSON.stringify(response));
-          const source = {uri: response.assets[0].uri};
+          const source = {uri: response.uri};
 
-          setPhotoForDB(
-            `data:${response.assets[0].type};base64, ${response.assets[0].uri}`,
-          );
+          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
           setHasPhoto(true);
         }
@@ -44,11 +41,10 @@ export default function UploadPhoto({navigation, route}) {
   };
 
   const uploadAndContinue = () => {
-    const db = getDatabase(Fire);
-
-    update(ref(db, 'users/' + uid + '/'), {
-      photo: photoForDB,
-    });
+    firebase
+      .database()
+      .ref('users/' + uid + '/')
+      .update({photo: photoForDB});
 
     const data = route.params;
     data.photo = photoForDB;
