@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ILLogo} from '../../assets';
-import {firebase} from '../../config/Fire';
+import {auth} from '../../config/Fire';
 import {colors, fonts} from '../../utils';
 
 export default function Splash({navigation}) {
   useEffect(() => {
-    const unsubcribe = firebase.auth().onAuthStateChanged(user => {
+    const unsubcribe = auth.onAuthStateChanged(user => {
       setTimeout(() => {
         if (user) {
           navigation.replace('MainApp');

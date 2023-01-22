@@ -4,7 +4,7 @@ import {showMessage} from 'react-native-flash-message';
 import * as ImagePicker from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
-import {firebase} from '../../config/Fire';
+import {database} from '../../config/Fire';
 import {colors, fonts, storeData} from '../../utils';
 
 export default function UploadPhoto({navigation, route}) {
@@ -41,10 +41,7 @@ export default function UploadPhoto({navigation, route}) {
   };
 
   const uploadAndContinue = () => {
-    firebase
-      .database()
-      .ref('users/' + uid + '/')
-      .update({photo: photoForDB});
+    database.ref('users/' + uid + '/').update({photo: photoForDB});
 
     const data = route.params;
     data.photo = photoForDB;

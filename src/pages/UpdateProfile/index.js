@@ -1,9 +1,8 @@
-import {ref, update} from 'firebase/database';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Profile} from '../../components';
-import Fire from '../../config/Fire';
+import {firebase} from '../../config/Fire';
 import {colors, getData} from '../../utils';
 
 export default function UpdateProfile({navigation}) {
@@ -25,15 +24,18 @@ export default function UpdateProfile({navigation}) {
 
   const updates = () => {
     console.log('profile: ', profile);
-    update(ref(Fire, `users/${profile.uid}/`))
-      .then(res => {
-        console.log('success: ', res);
+    firebase
+      .database()
+      .ref(`users/${profile.uid}/`)
+      .update(profile)
+      .then(() => {
+        console.log('success: ');
       })
       .catch(err => {
         showMessage({
           message: err.message,
           type: 'default',
-          backgroundColor: colors.white,
+          backgroundColor: colors.error,
           color: colors.white,
         });
       });

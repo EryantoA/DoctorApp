@@ -6,10 +6,11 @@ import {getData} from '../../utils';
 
 export default function UserProfile({navigation}) {
   const [profile, setProfile] = useState({
-    email: '',
+    fullName: '',
     profession: '',
     photo: ILNullPhoto,
   });
+
   useEffect(() => {
     getData('user').then(res => {
       const data = res;
@@ -17,13 +18,14 @@ export default function UserProfile({navigation}) {
       setProfile(data);
     });
   }, []);
+
   return (
     <View style={styles.page}>
       <Header title="Profile" onPress={() => navigation.goBack()} />
       <Gap height={10} />
-      {profile.email.length > 0 && (
+      {profile.fullName.length > 0 && (
         <Profile
-          name={profile.email}
+          name={profile.fullName}
           desc={profile.profession}
           photo={profile.photo}
         />

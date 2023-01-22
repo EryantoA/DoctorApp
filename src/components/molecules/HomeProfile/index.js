@@ -5,7 +5,7 @@ import {colors, fonts, getData} from '../../../utils';
 
 export default function HomeProfile({onPress}) {
   const [profile, setProfile] = useState({
-    email: '',
+    fullName: '',
     profession: '',
     photo: ILNullPhoto,
   });
@@ -24,7 +24,7 @@ export default function HomeProfile({onPress}) {
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={profile.photo} style={styles.avatar} />
       <View>
-        <Text style={styles.name}>{profile.email}</Text>
+        <Text style={styles.name}>{profile.fullName}</Text>
         <Text style={styles.profession}>{profile.profession}</Text>
       </View>
     </TouchableOpacity>

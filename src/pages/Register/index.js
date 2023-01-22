@@ -1,8 +1,9 @@
+import 'firebase/database';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {Button, Gap, Header, Input, Loading} from '../../components';
-import {firebase} from '../../config/Fire';
+import {auth, database} from '../../config/Fire';
 import {colors, storeData, useForm} from '../../utils';
 
 export default function Register({navigation}) {
@@ -18,22 +19,18 @@ export default function Register({navigation}) {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
-    firebase
-      .auth()
+    auth
       .createUserWithEmailAndPassword(form.email, form.password)
       .then(success => {
         setForm('reset');
         const data = {
-          fullname: form.fullName,
+          fullName: form.fullName,
           profession: form.profession,
           email: form.email,
           uid: success.user.uid,
         };
 
-        firebase
-          .database()
-          .ref('users/' + success.user.uid + '/')
-          .set(data);
+        database.ref('users/' + success.user.uid).set(data);
 
         storeData('user', data);
         navigation.navigate('UploadPhoto', data);
