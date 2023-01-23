@@ -4,7 +4,7 @@ import {showMessage} from 'react-native-flash-message';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Input, Profile} from '../../components';
-import {database} from '../../config/Fire';
+import {auth, database} from '../../config/Fire';
 import {colors, getData, storeData} from '../../utils';
 
 export default function UpdateProfile({navigation}) {
@@ -28,6 +28,42 @@ export default function UpdateProfile({navigation}) {
 
   const updates = () => {
     console.log('profile: ', profile);
+    console.log('new password: ', password);
+
+    if (password.length > 0) {
+      if (password.length < 6) {
+        showMessage({
+          message: 'Password kurang dari 6 karakter',
+          type: 'default',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      } else {
+        updatePassword();
+        updateProfileData();
+      }
+    } else {
+      updateProfileData();
+    }
+  };
+
+  const updatePassword = () => {
+    // update password
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        user.updatePassword(password).catch(err => {
+          showMessage({
+            message: err.message,
+            type: 'default',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+        });
+      }
+    });
+  };
+
+  const updateProfileData = () => {
     const data = profile;
     data.photo = photoForDB;
 
@@ -102,7 +138,12 @@ export default function UpdateProfile({navigation}) {
           <Gap height={24} />
           <Input label="Email" value={profile.email} disable />
           <Gap height={24} />
-          <Input label="Password" value={password} />
+          <Input
+            label="Password"
+            value={password}
+            secureTextEntry
+            onChangeText={value => setPassword(value)}
+          />
           <Gap height={40} />
           <Button title="Save Profile" onPress={updates} />
         </View>

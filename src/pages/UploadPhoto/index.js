@@ -30,10 +30,12 @@ export default function UploadPhoto({navigation, route}) {
           });
         } else {
           console.log('response getImage: ', JSON.stringify(response));
-          const source = {uri: response.uri};
+          const source = {uri: response.assets[0].uri};
           console.log(source);
 
-          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
+          setPhotoForDB(
+            `data:${response.assets[0].type};base64, ${response.assets[0].fileName}`,
+          );
           setPhoto(source);
           setHasPhoto(true);
         }
