@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import * as ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
 import {database} from '../../config/Fire';
@@ -17,7 +17,7 @@ export default function UploadPhoto({navigation, route}) {
   const [photo, setPhoto] = useState(ILNullPhoto);
 
   const getImage = () => {
-    ImagePicker.launchImageLibrary(
+    launchImageLibrary(
       {quality: 0.5, maxWidth: 200, maxHeight: 200},
       response => {
         console.log('response: ', response);
@@ -31,6 +31,7 @@ export default function UploadPhoto({navigation, route}) {
         } else {
           console.log('response getImage: ', JSON.stringify(response));
           const source = {uri: response.uri};
+          console.log(source);
 
           setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
@@ -40,7 +41,7 @@ export default function UploadPhoto({navigation, route}) {
     );
   };
 
-  const uploadAndContinue = () => {
+  const uploadAndContinue = async () => {
     database.ref('users/' + uid + '/').update({photo: photoForDB});
 
     const data = route.params;

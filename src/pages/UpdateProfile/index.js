@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Input, Profile} from '../../components';
-import {firebase} from '../../config/Fire';
-import {colors, getData} from '../../utils';
+import {database} from '../../config/Fire';
+import {colors, getData, storeData} from '../../utils';
 
 export default function UpdateProfile({navigation}) {
   const [profile, setProfile] = useState({
@@ -13,23 +15,28 @@ export default function UpdateProfile({navigation}) {
   });
 
   const [password, setPassword] = useState('');
+  const [photo, setPhoto] = useState(ILNullPhoto);
+  const [photoForDB, setPhotoForDB] = useState('');
 
   useEffect(() => {
     getData('user').then(res => {
       const data = res;
-      data.photo = {uri: res.photo};
+      setPhoto({uri: res.photo});
       setProfile(data);
     });
   }, []);
 
   const updates = () => {
     console.log('profile: ', profile);
-    firebase
-      .database()
+    const data = profile;
+    data.photo = photoForDB;
+
+    database
       .ref(`users/${profile.uid}/`)
-      .update(profile)
+      .update(data)
       .then(() => {
         console.log('success: ');
+        storeData('user', data);
       })
       .catch(err => {
         showMessage({
@@ -48,17 +55,43 @@ export default function UpdateProfile({navigation}) {
     });
   };
 
+  const getImage = () => {
+    launchImageLibrary(
+      {quality: 0.5, maxWidth: 200, maxHeight: 200},
+      response => {
+        console.log('response: ', response);
+        if (response.didCancel || response.error) {
+          showMessage({
+            message: 'Oops, sepertinya anda tidak memilih fotonya',
+            type: 'default',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+        } else {
+          console.log('response getImage: ', JSON.stringify(response));
+          const source = {uri: response.assets[0].uri};
+          console.log(source);
+
+          setPhotoForDB(
+            `data:${response.assets[0].type};base64, ${response.assets[0].fileName}`,
+          );
+          setPhoto(source);
+        }
+      },
+    );
+  };
+
   return (
     <View style={styles.page}>
       <Header title="Edit Profile" onPress={() => navigation.goBack()} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <Profile isRemove photo={profile.photo} />
+          <Profile isRemove photo={photo} onPress={getImage} />
           <Gap height={26} />
           <Input
             label="Full Name"
             value={profile.fullName}
-            onChangeText={value => changeText('fullname', value)}
+            onChangeText={value => changeText('fullName', value)}
           />
           <Gap height={24} />
           <Input

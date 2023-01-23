@@ -30,7 +30,7 @@ export default function Register({navigation}) {
           uid: success.user.uid,
         };
 
-        database.ref('users/' + success.user.uid).set(data);
+        database.ref('users/' + success.user.uid + '/').set(data);
 
         storeData('user', data);
         navigation.navigate('UploadPhoto', data);
