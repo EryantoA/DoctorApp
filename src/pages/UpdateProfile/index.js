@@ -19,11 +19,14 @@ export default function UpdateProfile({navigation}) {
   const [photoForDB, setPhotoForDB] = useState('');
 
   useEffect(() => {
-    getData('user').then(res => {
-      const data = res;
-      setPhoto({uri: res.photo});
-      setProfile(data);
-    });
+    const user = async () => {
+      getData('user').then(res => {
+        const data = res;
+        setPhoto({uri: res.photo});
+        setProfile(data);
+      });
+    };
+    user();
   }, []);
 
   const updates = () => {
@@ -41,9 +44,11 @@ export default function UpdateProfile({navigation}) {
       } else {
         updatePassword();
         updateProfileData();
+        navigation.replace('MainApp');
       }
     } else {
       updateProfileData();
+      navigation.replace('MainApp');
     }
   };
 
