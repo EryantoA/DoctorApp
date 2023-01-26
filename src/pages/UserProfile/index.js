@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
 import {ILNullPhoto} from '../../assets';
 import {Gap, Header, List, Profile} from '../../components';
 import {auth} from '../../config/Fire';
-import {colors, getData} from '../../utils';
+import {getData, showError} from '../../utils';
 
 export default function UserProfile({navigation}) {
   const [profile, setProfile] = useState({
@@ -29,12 +28,7 @@ export default function UserProfile({navigation}) {
         navigation.replace('GetStarted');
       })
       .catch(err => {
-        showMessage({
-          message: err.message,
-          type: 'default',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        showError(err.message);
       });
   };
 

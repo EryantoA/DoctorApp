@@ -1,10 +1,10 @@
 import 'firebase/database';
-import React, {useState} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
-import {Button, Gap, Header, Input, Loading} from '../../components';
+import {useDispatch} from 'react-redux';
+import {Button, Gap, Header, Input} from '../../components';
 import {auth, database} from '../../config/Fire';
-import {colors, storeData, useForm} from '../../utils';
+import {colors, showError, storeData, useForm} from '../../utils';
 
 export default function Register({navigation}) {
   const [form, setForm] = useForm({
@@ -14,11 +14,10 @@ export default function Register({navigation}) {
     password: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onContinue = () => {
-    console.log(form);
-    setLoading(true);
+    dispatch({type: 'SET_LOADING', value: true});
     auth
       .createUserWithEmailAndPassword(form.email, form.password)
       .then(success => {
@@ -36,14 +35,8 @@ export default function Register({navigation}) {
         navigation.navigate('UploadPhoto', data);
       })
       .catch(err => {
-        console.log('error: ', err);
-        setLoading(false);
-        showMessage({
-          message: err.message,
-          type: 'default',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        dispatch({type: 'SET_LOADING', value: false});
+        showError(err.message);
       });
   };
   return (
@@ -81,7 +74,6 @@ export default function Register({navigation}) {
           </ScrollView>
         </View>
       </View>
-      {loading && <Loading />}
     </>
   );
 }

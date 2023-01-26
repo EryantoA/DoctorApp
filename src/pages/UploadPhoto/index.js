@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {IconAddPhoto, IconRemovePhoto, ILNullPhoto} from '../../assets';
 import {Button, Gap, Header, Link} from '../../components';
 import {database} from '../../config/Fire';
-import {colors, fonts, storeData} from '../../utils';
+import {colors, fonts, showError, storeData} from '../../utils';
 
 export default function UploadPhoto({navigation, route}) {
   const {fullName, profession, uid} = route.params;
-  console.log('fullname: ', fullName);
-  console.log('profession: ', profession);
 
   const [photoForDB, setPhotoForDB] = useState('');
   const [hasPhoto, setHasPhoto] = useState(false);
@@ -20,18 +17,11 @@ export default function UploadPhoto({navigation, route}) {
     launchImageLibrary(
       {quality: 0.5, maxWidth: 200, maxHeight: 200},
       response => {
-        console.log('response: ', response);
         if (response.didCancel || response.error) {
-          showMessage({
-            message: 'Oops, sepertinya anda tidak memilih fotonya',
-            type: 'default',
-            backgroundColor: colors.error,
-            color: colors.white,
-          });
+          showError(response.message);
         } else {
           console.log('response getImage: ', JSON.stringify(response));
           const source = {uri: response.assets[0].uri};
-          console.log(source);
 
           setPhotoForDB(
             `data:${response.assets[0].type};base64, ${response.assets[0].fileName}`,
