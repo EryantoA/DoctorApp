@@ -18,7 +18,7 @@ export default function UploadPhoto({navigation, route}) {
       {quality: 0.5, maxWidth: 200, maxHeight: 200},
       response => {
         if (response.didCancel || response.error) {
-          showError(response.message);
+          showError('oops, sepertinya anda tidak memilih foto nya?');
         } else {
           console.log('response getImage: ', JSON.stringify(response));
           const source = {uri: response.assets[0].uri};
