@@ -1,15 +1,34 @@
-import React from 'react';
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {
-  DummyHospital1,
-  DummyHospital2,
-  DummyHospital3,
-  ILHospitalBG,
-} from '../../assets';
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {ILHospitalBG} from '../../assets';
 import {ListHospital} from '../../components';
-import {colors, fonts} from '../../utils';
+import {database} from '../../config/Fire';
+import {colors, fonts, showError} from '../../utils';
 
 export default function Hospitals() {
+  const [hospitals, setHospitals] = useState([]);
+
+  useEffect(() => {
+    database
+      .ref('hospitals/')
+      .once('value')
+      .then(res => {
+        console.log('data: ', res.val());
+        if (res.val()) {
+          setHospitals(res.val());
+        }
+      })
+      .catch(err => {
+        showError(err.message);
+      });
+  }, []);
+
   return (
     <View style={styles.page}>
       <ImageBackground source={ILHospitalBG} style={styles.background}>
@@ -17,24 +36,19 @@ export default function Hospitals() {
         <Text style={styles.desc}>3 tersedia</Text>
       </ImageBackground>
       <View style={styles.content}>
-        <ListHospital
-          type="Rumah Sakit"
-          name="Citra Bunga Merdeka"
-          address="Jln. Surya Sejahtera 20"
-          pic={DummyHospital1}
-        />
-        <ListHospital
-          type="Rumah Sakit Anak"
-          name="Happy Family Kids"
-          address="Jln. Surya Sejahtera 20"
-          pic={DummyHospital2}
-        />
-        <ListHospital
-          type="Rumah Sakit Jiwa"
-          name="Tingkatan Paling Atas"
-          address="Jln. Surya Sejahtera 20"
-          pic={DummyHospital3}
-        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {hospitals.map(item => {
+            return (
+              <ListHospital
+                key={item.id}
+                type={item.type}
+                name={item.name}
+                address={item.address}
+                pic={item.picture}
+              />
+            );
+          })}
+        </ScrollView>
       </View>
     </View>
   );

@@ -5,7 +5,7 @@ import {colors, fonts} from '../../../utils';
 export default function ListHospital({type, name, address, pic}) {
   return (
     <View style={styles.container}>
-      <Image source={pic} style={styles.picture} />
+      <Image source={{uri: pic}} style={styles.picture} />
       <View>
         <Text style={styles.title}>{type}</Text>
         <Text style={styles.title}>{name}</Text>
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  picture: {width: 80, height: 60, borderRadius: 11, marginRight: 16},
+  picture: {width: 80, height: 80, borderRadius: 11, marginRight: 16},
   title: {
     fontSize: 16,
     fontFamily: fonts.primary.normal,
@@ -33,5 +33,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary[300],
     color: colors.text.secondary,
     marginTop: 6,
+    maxWidth: '89%',
   },
 });

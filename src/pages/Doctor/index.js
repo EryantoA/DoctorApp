@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {
-  DummyDoctor1,
-  DummyDoctor2,
-  DummyDoctor3,
-  JSONCategoryDoctor,
-} from '../../assets';
+import {DummyDoctor1, DummyDoctor2, DummyDoctor3} from '../../assets';
 import {
   DoctorCategory,
   Gap,
@@ -18,6 +13,7 @@ import {colors, fonts, showError} from '../../utils';
 
 export default function Doctor({navigation}) {
   const [news, setNews] = useState([]);
+  const [categoryDoctor, setCategoryDoctor] = useState([]);
 
   useEffect(() => {
     database
@@ -27,6 +23,19 @@ export default function Doctor({navigation}) {
         console.log('data: ', res.val());
         if (res.val()) {
           setNews(res.val());
+        }
+      })
+      .catch(err => {
+        showError(err.message);
+      });
+
+    database
+      .ref('category_doctor/')
+      .once('value')
+      .then(res => {
+        console.log('category doctor: ', res.val());
+        if (res.val()) {
+          setCategoryDoctor(res.val());
         }
       })
       .catch(err => {
@@ -49,7 +58,7 @@ export default function Doctor({navigation}) {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={styles.category}>
                 <Gap width={32} />
-                {JSONCategoryDoctor.datas.map(item => {
+                {categoryDoctor.map(item => {
                   return (
                     <DoctorCategory
                       key={item.id}
