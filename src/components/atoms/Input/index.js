@@ -1,3 +1,4 @@
+import {Picker} from '@react-native-picker/picker';
 import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {colors, fonts} from '../../../utils';
@@ -8,20 +9,43 @@ export default function Input({
   onChangeText,
   secureTextEntry,
   disable,
+  select,
+  onValueChange,
+  selectItem,
 }) {
   const [border, setBorder] = useState(colors.border);
   const onFocusForm = () => {
     setBorder(colors.tertiary);
   };
-  const onFocusBlur = () => {
+  const onBlurForm = () => {
     setBorder(colors.border);
   };
+  if (select) {
+    return (
+      <View>
+        <Text style={styles.label}>{label}</Text>
+        <View style={styles.picker}>
+          <Picker selectedValue={value} onValueChange={onValueChange}>
+            {selectItem.map(item => {
+              return (
+                <Picker.Item
+                  key={item.id}
+                  label={item.label}
+                  value={item.value}
+                />
+              );
+            })}
+          </Picker>
+        </View>
+      </View>
+    );
+  }
   return (
     <View>
       <Text style={styles.label}>{label}</Text>
       <TextInput
         onFocus={onFocusForm}
-        onBlur={onFocusBlur}
+        onBlur={onBlurForm}
         style={styles.input(border)}
         value={value}
         onChangeText={onChangeText}
