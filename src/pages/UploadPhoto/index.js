@@ -34,7 +34,7 @@ export default function UploadPhoto({navigation, route}) {
   };
 
   const uploadAndContinue = async () => {
-    database.ref('users/' + uid + '/').update({photo: photoForDB});
+    database.ref('doctors/' + uid + '/').update({photo: photoForDB});
 
     const data = route.params;
     data.photo = photoForDB;

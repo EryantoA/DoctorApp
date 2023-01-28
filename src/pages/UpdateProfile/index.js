@@ -73,7 +73,7 @@ export default function UpdateProfile({navigation}) {
     data.photo = photoForDB;
 
     database
-      .ref(`users/${profile.uid}/`)
+      .ref(`doctors/${profile.uid}/`)
       .update(data)
       .then(() => {
         console.log('success: ');

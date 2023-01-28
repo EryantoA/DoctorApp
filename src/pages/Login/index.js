@@ -17,7 +17,7 @@ export default function Login({navigation}) {
       .then(res => {
         dispatch({type: 'SET_LOADING', value: false});
         database
-          .ref(`users/${res.user.uid}/`)
+          .ref(`doctors/${res.user.uid}/`)
           .once('value')
           .then(resDB => {
             if (resDB.val()) {
